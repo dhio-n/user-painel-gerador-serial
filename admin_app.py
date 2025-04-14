@@ -43,4 +43,4 @@ for usuario in usuarios:
         label_botao = "Inativar" if usuario["ativo"] else "Ativar"
         if st.button(label_botao, key=f"status_{usuario['id']}"):
             alterar_status_usuario(usuario["id"], novo_status)
-            st.experimental_rerun()
+            st.experimental_rerun()  # Reinicia a execução após mudança
