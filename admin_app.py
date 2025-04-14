@@ -25,6 +25,7 @@ st.markdown("---")
 # ---------- LISTA DE USUÁRIOS ----------
 st.header("📋 Lista de usuários")
 
+# Carregar novamente a lista de usuários após cada interação
 usuarios = listar_usuarios()
 
 for usuario in usuarios:
@@ -43,4 +44,5 @@ for usuario in usuarios:
         label_botao = "Inativar" if usuario["ativo"] else "Ativar"
         if st.button(label_botao, key=f"status_{usuario['id']}"):
             alterar_status_usuario(usuario["id"], novo_status)
-            st.experimental_rerun()  # Reinicia a execução após mudança
+            # Atualiza a lista de usuários sem reiniciar a aplicação
+            usuarios = listar_usuarios()  # Atualiza a lista após a alteração
