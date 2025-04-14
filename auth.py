@@ -8,6 +8,10 @@ def login_form():
     usuario = st.text_input("Usuário")
     senha = st.text_input("Senha", type="password")
     login_btn = st.button("Entrar")
+    if st.session_state.get("logged_in"):
+        # Limpa os campos após login
+        st.session_state["usuario_login"] = ""
+        st.session_state["senha_login"] = ""
 
     if login_btn:
         if autenticar_usuario(usuario, senha):
