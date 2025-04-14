@@ -13,19 +13,6 @@ def conectar():
         cursor_factory=RealDictCursor
     )
 
-def criar_usuario(usuario, senha):
-    conn = conectar()
-    cursor = conn.cursor()
-    senha_hash = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-
-    cursor.execute("""
-        INSERT INTO usuarios (usuario, senha, status)
-        VALUES (%s, %s, TRUE)
-        ON CONFLICT (usuario) DO NOTHING
-    """, (usuario, senha_hash))
-    conn.commit()
-    conn.close()
-
 def listar_usuarios():
     conn = conectar()
     cursor = conn.cursor()
@@ -34,20 +21,23 @@ def listar_usuarios():
     conn.close()
     return usuarios
 
-def alterar_status_usuario(usuario_id, novo_status):
+def criar_usuario(usuario, senha):
+    senha_hash = bcrypt.hashpw(senha.encode(), bcrypt.gensalt()).decode()
     conn = conectar()
     cursor = conn.cursor()
-    cursor.execute("UPDATE usuarios SET status = %s WHERE id = %s", (novo_status, usuario_id))
+    cursor.execute("""
+        INSERT INTO usuarios (usuario, senha, status)
+        VALUES (%s, %s, TRUE)
+        ON CONFLICT (usuario) DO NOTHING
+    """, (usuario, senha_hash))
     conn.commit()
     conn.close()
 
-def autenticar_usuario(usuario, senha):
+def alterar_status_usuario(usuario_id, novo_status):
     conn = conectar()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM usuarios WHERE usuario = %s", (usuario,))
-    user = cursor.fetchone()
+    cursor.execute("""
+        UPDATE usuarios SET status = %s WHERE id = %s
+    """, (novo_status, usuario_id))
+    conn.commit()
     conn.close()
-    
-    if user and bcrypt.checkpw(senha.encode('utf-8'), user['senha'].encode('utf-8')):
-        return user
-    return None
