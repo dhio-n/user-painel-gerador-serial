@@ -25,10 +25,12 @@ st.markdown("---")
 # ---------- LISTA DE USUÁRIOS ----------
 st.header("📋 Lista de usuários")
 
-# Carregar novamente a lista de usuários após cada interação
-usuarios = listar_usuarios()
+# Carregar os usuários da base de dados ou do estado atual
+if 'usuarios' not in st.session_state:
+    st.session_state.usuarios = listar_usuarios()
 
-for usuario in usuarios:
+# Atualizar a lista de usuários após alterações no status
+for usuario in st.session_state.usuarios:
     col1, col2, col3, col4 = st.columns([3, 2, 2, 2])
     with col1:
         st.write(f"👤 {usuario['usuario']}")
@@ -44,5 +46,9 @@ for usuario in usuarios:
         label_botao = "Inativar" if usuario["ativo"] else "Ativar"
         if st.button(label_botao, key=f"status_{usuario['id']}"):
             alterar_status_usuario(usuario["id"], novo_status)
-            # Atualiza a lista de usuários sem reiniciar a aplicação
-            usuarios = listar_usuarios()  # Atualiza a lista após a alteração
+            # Atualizando a lista de usuários no session_state
+            st.session_state.usuarios = listar_usuarios()
+            # Não usar st.experimental_rerun(), mas sim a atualização do estado
+            st.success(f"Status do usuário {usuario['usuario']} alterado!")
+            break  # Impede múltiplos cliques seguidos
+
