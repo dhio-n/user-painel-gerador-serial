@@ -71,4 +71,4 @@ for usuario in st.session_state.usuarios:
 st.markdown("---")
 if st.button("🚪 Sair"):
     st.session_state.logged_in = False
-    st.experimental_rerun()
+    st.rerun()
