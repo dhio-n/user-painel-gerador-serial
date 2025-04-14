@@ -62,3 +62,20 @@ def autenticar_usuario(usuario, senha):
         else:
             return False  # Autenticado, mas não é admin ou não está ativo
     return False  # Dados inválidos ou senha incorreta
+
+
+def usuario_existe(usuario):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("SELECT 1 FROM usuarios WHERE usuario = %s", (usuario,))
+    existe = cursor.fetchone() is not None
+    conn.close()
+    return existe
+
+def alterar_tipo_usuario(usuario_id, novo_admin):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE usuarios SET admin = %s WHERE id = %s", (novo_admin, usuario_id))
+    conn.commit()
+    conn.close()
+
